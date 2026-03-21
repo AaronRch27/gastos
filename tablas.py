@@ -1,11 +1,14 @@
-import sqlite3
+import os
+import psycopg2
+from dotenv import load_dotenv
+load_dotenv()
 
-DB_NAME = "gastos.db"
+print(os.getenv("DATABASE_URL"))
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 def get_connection():
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row  # para acceder por nombre de columna
-    return conn
+    return psycopg2.connect(DATABASE_URL)
+
 
 def init_db():
     conn = get_connection()
@@ -13,34 +16,28 @@ def init_db():
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS usuarios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL,
-        password_hash TEXT NOT NULL,
+        id SERIAL PRIMARY KEY,
+        nombre VARCHAR(100),
+        email VARCHAR(150) UNIQUE,
+        password_hash TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS gastos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        fecha DATE NOT NULL,
-        concepto TEXT NOT NULL,
+        id SERIAL PRIMARY KEY,
+        fecha DATE,
+        concepto TEXT,
         categoria TEXT,
         comentario TEXT,
-        monto REAL NOT NULL,
+        monto NUMERIC,
         modo_pago TEXT,
-        usuario_id INTEGER,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(usuario_id) REFERENCES usuarios(id)
+        usuario_id INTEGER REFERENCES usuarios(id),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
 
-    cursor.execute("""
-    UPDATE gastos
-    SET fecha = substr(fecha, 7, 4) || '-' || substr(fecha, 4, 2) || '-' || substr(fecha, 1, 2)
-    WHERE fecha LIKE '__/__/____'
-    """)
-
-
     conn.commit()
+    cursor.close()
     conn.close()
