@@ -1,10 +1,10 @@
 import os
 import psycopg2
-from dotenv import load_dotenv
-load_dotenv()
+import streamlit as st
 
-print(os.getenv("DATABASE_URL"))
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = st.secrets["DATABASE_URL"]
+
+
 
 def get_connection():
     return psycopg2.connect(DATABASE_URL)
