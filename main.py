@@ -123,7 +123,7 @@ with tab2:
                     cursor.execute("""
                     INSERT INTO gastos 
                     (fecha, concepto, categoria, comentario, monto, modo_pago, usuario_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
                     """, (
                         fecha.strftime("%Y-%m-%d"),  # 🔥 clave
                         concepto,
@@ -172,8 +172,8 @@ with tab2:
 
             cursor.execute("""
             UPDATE gastos
-            SET concepto = ?, monto = ?
-            WHERE id = ?
+            SET concepto = %s, monto = %s
+            WHERE id = %s
             """, (nuevo_concepto, nuevo_monto, id_editar))
 
             conn.commit()
@@ -190,7 +190,7 @@ with tab2:
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("DELETE FROM gastos WHERE id = ?", (id_eliminar,))
+        cursor.execute("DELETE FROM gastos WHERE id = %s", (id_eliminar,))
         conn.commit()
         conn.close()
 
