@@ -165,6 +165,7 @@ with tab2:
 
         nuevo_concepto = st.text_input("Concepto", value=data["concepto"])
         nuevo_monto = st.number_input("Monto", value=float(data["monto"]))
+        nueva_categoria = st.selectbox("Categoría", ["comida", "casa", "transporte", "convivencia", "medicamentos", "servicios"])
 
         if st.button("Guardar cambios"):
             conn = get_connection()
@@ -172,9 +173,9 @@ with tab2:
 
             cursor.execute("""
             UPDATE gastos
-            SET concepto = %s, monto = %s
+            SET concepto = %s, monto = %s, categoria=%s
             WHERE id = %s
-            """, (nuevo_concepto, nuevo_monto, id_editar))
+            """, (nuevo_concepto, nuevo_monto, nueva_categoria, id_editar))
 
             conn.commit()
             conn.close()
