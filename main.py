@@ -256,8 +256,15 @@ with tab3:
 
     with col2:
         st.subheader("Gasto por día de la semana")
-        gasto_dias = df.groupby("dia_semana")["monto"].sum()
-        st.bar_chart(gasto_dias)
+        tabla = df.pivot_table(
+        index="dia_semana",
+        columns="categoria",
+        values="monto",
+        aggfunc="sum",
+        fill_value=0
+        )
+
+        st.bar_chart(tabla)
 
     with col3:
         st.subheader("Gasto por día")
