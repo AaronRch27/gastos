@@ -304,20 +304,20 @@ with tab3:
             )
         )
 
-    fig.update_layout(
-        xaxis_title="Fecha",
-        yaxis_title="Monto ($)",
-        hovermode="x unified",
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1
+        fig.update_layout(
+            xaxis_title="Fecha",
+            yaxis_title="Monto ($)",
+            hovermode="x unified",
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            )
         )
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+    
+        st.plotly_chart(fig, use_container_width=True)
 
     with col4:
         st.subheader("📍 Gastos por fecha")
