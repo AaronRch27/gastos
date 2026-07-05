@@ -3,6 +3,7 @@ import pandas as pd
 from tablas import init_db, get_connection
 from datetime import datetime
 import plotly.express as px
+import plotly.graph_objects as go
 
 
 hoy = datetime.today()
