@@ -267,8 +267,8 @@ with tab3:
         st.bar_chart(tabla)
 
     with col3:
-        st.subheader("Gasto por día")
-    
+        st.subheader("Gasto por día y promedio acumulado")
+
         diario = (
             df.groupby("fecha")["monto"]
             .sum()
@@ -276,21 +276,30 @@ with tab3:
             .sort_values("fecha")
         )
     
-        promedio = diario["monto"].mean()
+        # Calcular el promedio acumulado
+        diario["promedio_acumulado"] = diario["monto"].expanding().mean()
     
         fig = px.line(
             diario,
             x="fecha",
-            y="monto",
-            markers=True
+            y="promedio_acumulado",
+            markers=True,
+            labels={
+                "fecha": "Fecha",
+                "promedio_acumulado": "Promedio diario acumulado"
+            },
+            title="Evolución del gasto promedio diario"
         )
     
-        fig.add_hline(
-            y=promedio,
-            line_dash="dash",
-            line_color="red",
-            annotation_text=f"Promedio: ${promedio:,.2f}",
-            annotation_position="top left"
+        fig.update_traces(
+            line=dict(color="royalblue", width=3),
+            marker=dict(size=6)
+        )
+    
+        fig.update_layout(
+            xaxis_title="Fecha",
+            yaxis_title="Promedio ($)",
+            hovermode="x unified"
         )
     
         st.plotly_chart(fig, use_container_width=True)
