@@ -268,8 +268,32 @@ with tab3:
 
     with col3:
         st.subheader("Gasto por día")
-        diario = df.groupby("fecha")["monto"].sum().sort_index()
-        st.line_chart(diario)
+    
+        diario = (
+            df.groupby("fecha")["monto"]
+            .sum()
+            .reset_index()
+            .sort_values("fecha")
+        )
+    
+        promedio = diario["monto"].mean()
+    
+        fig = px.line(
+            diario,
+            x="fecha",
+            y="monto",
+            markers=True
+        )
+    
+        fig.add_hline(
+            y=promedio,
+            line_dash="dash",
+            line_color="red",
+            annotation_text=f"Promedio: ${promedio:,.2f}",
+            annotation_position="top left"
+        )
+    
+        st.plotly_chart(fig, use_container_width=True)
 
     with col4:
         st.subheader("📍 Gastos por fecha")
