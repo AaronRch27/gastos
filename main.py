@@ -269,6 +269,7 @@ with tab3:
     with col3:
         st.subheader("Gasto por día y promedio acumulado")
 
+        # Gasto total por día
         diario = (
             df.groupby("fecha")["monto"]
             .sum()
@@ -276,33 +277,46 @@ with tab3:
             .sort_values("fecha")
         )
     
-        # Calcular el promedio acumulado
+        # Promedio acumulado del gasto diario
         diario["promedio_acumulado"] = diario["monto"].expanding().mean()
     
-        fig = px.line(
-            diario,
-            x="fecha",
-            y="promedio_acumulado",
-            markers=True,
-            labels={
-                "fecha": "Fecha",
-                "promedio_acumulado": "Promedio diario acumulado"
-            },
-            title="Evolución del gasto promedio diario"
+        fig = go.Figure()
+    
+        # Línea del gasto diario
+        fig.add_trace(
+            go.Scatter(
+                x=diario["fecha"],
+                y=diario["monto"],
+                mode="lines+markers",
+                name="Gasto diario"
+            )
         )
     
-        fig.update_traces(
-            line=dict(color="royalblue", width=3),
-            marker=dict(size=6)
+        # Línea del promedio acumulado
+        fig.add_trace(
+            go.Scatter(
+                x=diario["fecha"],
+                y=diario["promedio_acumulado"],
+                mode="lines",
+                name="Promedio acumulado",
+                line=dict(color="red", dash="dash")
+            )
         )
-    
-        fig.update_layout(
-            xaxis_title="Fecha",
-            yaxis_title="Promedio ($)",
-            hovermode="x unified"
+
+    fig.update_layout(
+        xaxis_title="Fecha",
+        yaxis_title="Monto ($)",
+        hovermode="x unified",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
         )
-    
-        st.plotly_chart(fig, use_container_width=True)
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
 
     with col4:
         st.subheader("📍 Gastos por fecha")
